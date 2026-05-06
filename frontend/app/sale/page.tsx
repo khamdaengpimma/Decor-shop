@@ -285,12 +285,12 @@ export default function SalePage() {
 
                         <div className="flex items-center gap-3">
                           <span className="text-2xl font-black text-gray-900">
-                            $
+                            ₫
                             {product.salePrice?.toLocaleString()}
                           </span>
 
                           <span className="text-sm text-gray-400 line-through">
-                            $
+                            ₫
                             {product.price.toLocaleString()}
                           </span>
                         </div>
@@ -298,7 +298,7 @@ export default function SalePage() {
                         {/* SAVE */}
 
                         <p className="mt-2 text-xs font-bold text-green-600">
-                          Save $
+                          Save ₫
                           {(
                             product.price -
                             (product.salePrice ||

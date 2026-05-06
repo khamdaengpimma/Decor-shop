@@ -206,7 +206,7 @@ export default function Customers() {
               { label: "Total Customers", value: customers.length,        bg: "bg-blue-50",   color: "text-blue-600",  icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8z" },
               { label: "Active",          value: counts["active"]  ?? 0,  bg: "bg-green-50",  color: "text-green-600", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
               { label: "Inactive",        value: counts["inactive"] ?? 0, bg: "bg-gray-100",  color: "text-gray-500",  icon: "M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" },
-              { label: "Total Spent",     value: `$${totalSpent.toLocaleString()}`, bg: "bg-amber-50", color: "text-amber-600", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+              { label: "Total Spent",     value: `₫${totalSpent.toLocaleString()}`, bg: "bg-amber-50", color: "text-amber-600", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
             ].map(({ label, value, bg, color, icon }) => (
               <div key={label} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col gap-3">
                 <div className={`w-9 h-9 rounded-xl ${bg} ${color} flex items-center justify-center`}>
@@ -306,7 +306,7 @@ export default function Customers() {
                       {/* Spent */}
                       {customer.spent !== undefined && (
                         <span className="hidden sm:block text-sm font-bold text-gray-900 flex-shrink-0">
-                          ${customer.spent.toLocaleString()}
+                          ₫{customer.spent.toLocaleString()}
                         </span>
                       )}
 
@@ -334,7 +334,7 @@ export default function Customers() {
                             { label: "Phone",    value: customer.phone ?? "—" },
                             { label: "Joined",   value: fmt(customer.createdAt) },
                             { label: "Orders",   value: customer.orders ?? "—" },
-                            { label: "Spent",    value: customer.spent !== undefined ? `$${customer.spent.toLocaleString()}` : "—" },
+                            { label: "Spent",    value: customer.spent !== undefined ? `₫${customer.spent.toLocaleString()}` : "—" },
                             { label: "Customer ID", value: `#${customer._id.slice(-8).toUpperCase()}` },
                           ].map(({ label, value }) => (
                             <div key={label} className="bg-white rounded-xl p-3 border border-gray-100">

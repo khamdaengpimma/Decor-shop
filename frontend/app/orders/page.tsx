@@ -170,7 +170,7 @@ export default function OrdersPage() {
               </p>
 
               <h3 className="mt-2 text-3xl font-black text-amber-500">
-                ${totalSpent.toLocaleString()}
+                ₫{totalSpent.toLocaleString()}
               </h3>
             </div>
           </div>
@@ -324,7 +324,7 @@ export default function OrdersPage() {
                                 </p>
 
                                 <p className="text-xs text-gray-400 mt-1">
-                                  $
+                                  ₫
                                   {item.price.toLocaleString()}{" "}
                                   × {item.qty}
                                 </p>
@@ -332,7 +332,7 @@ export default function OrdersPage() {
 
                               <div className="text-right">
                                 <p className="font-black text-amber-500">
-                                  $
+                                  ₫
                                   {subtotal.toLocaleString()}
                                 </p>
                               </div>
@@ -349,7 +349,7 @@ export default function OrdersPage() {
                       </span>
 
                       <span className="text-2xl font-black text-amber-500">
-                        $
+                        ₫
                         {order.total.toLocaleString()}
                       </span>
                     </div>

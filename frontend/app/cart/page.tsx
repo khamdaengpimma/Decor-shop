@@ -336,13 +336,13 @@ export default function CartPage() {
                           </h3>
 
                           <p className="mt-1 text-sm text-gray-400">
-                            $
+                            ₫
                             {item.product.price.toLocaleString()}{" "}
                             each
                           </p>
 
-                          <p className="mt-3 text-xl font-black text-amber-500">
-                            $
+                          <p className="mt-3 text-xxl font-black text-amber-800">
+                            ₫
                             {itemTotal.toLocaleString()}
                           </p>
 
@@ -364,12 +364,12 @@ export default function CartPage() {
                                         ._id
                                     )
                               }
-                              className="w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 font-bold"
+                              className="w-9 h-9 rounded-xl bg-gray-500 hover:bg-gray-100 font-bold"
                             >
                               −
                             </button>
 
-                            <span className="w-10 text-center font-bold">
+                            <span className="w-10 text-center font-bold text-red-500">
                               {
                                 item.qty
                               }
@@ -381,7 +381,7 @@ export default function CartPage() {
                                   item.product
                                 )
                               }
-                              className="w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 font-bold"
+                              className="w-9 h-9 rounded-xl bg-gray-500 hover:bg-gray-100 font-bold"
                             >
                               +
                             </button>
@@ -490,7 +490,7 @@ export default function CartPage() {
                     </span>
 
                     <span>
-                      $
+                      đ
                       {subtotal.toLocaleString()}
                     </span>
                   </div>
@@ -514,7 +514,7 @@ export default function CartPage() {
                     </span>
 
                     <span>
-                      $
+                      đ
                       {tax.toLocaleString()}
                     </span>
                   </div>
@@ -525,7 +525,7 @@ export default function CartPage() {
                     </span>
 
                     <span className="text-3xl font-black text-amber-500">
-                      $
+                      đ
                       {grandTotal.toLocaleString()}
                     </span>
                   </div>
@@ -545,7 +545,7 @@ export default function CartPage() {
                     ? "Processing..."
                     : !isLoggedIn
                     ? "Login Required"
-                    : `Checkout • $${grandTotal.toLocaleString()}`}
+                    : `Checkout • ₫${grandTotal.toLocaleString()}`}
                 </button>
 
                 {!isLoggedIn && (

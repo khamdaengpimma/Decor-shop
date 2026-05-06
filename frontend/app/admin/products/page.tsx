@@ -328,7 +328,7 @@ console.log(payload);
                       )}
                       <p className="text-sm font-semibold text-gray-800 line-clamp-1 mt-0.5">{p.name}</p>
                       <div className="flex items-center justify-between mt-auto pt-2">
-                        <span className="text-sm font-bold text-gray-900">${p.price.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-gray-900">₫{p.price.toLocaleString()}</span>
                         {p.stock !== undefined && (
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full
                             ${p.stock === 0 ? "bg-red-100 text-red-500" : "bg-green-100 text-green-600"}`}>

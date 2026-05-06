@@ -171,7 +171,7 @@ export default function ProductsPage() {
                       <p className="text-sm font-semibold text-gray-800 line-clamp-1 mt-0.5 hover:text-amber-500 transition-colors">{p.name}</p>
                     </Link>
                     <div className="flex items-center justify-between mt-auto pt-2">
-                      <span className="text-sm font-bold text-gray-900">${p.price.toLocaleString()}</span>
+                      <span className="text-sm font-bold text-gray-900">₫{p.price.toLocaleString()}</span>
                       {p.stock !== undefined && p.stock > 0 && (
                         <span className="text-[10px] text-gray-400">{p.stock} left</span>
                       )}

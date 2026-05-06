@@ -136,11 +136,11 @@ export default function ProductDetailPage() {
                 
                 <div className="flex items-end gap-3 mt-4">
                   <span className="text-3xl font-extrabold text-amber-500">
-                    ${product.price.toLocaleString()}
+                    ₫{product.price.toLocaleString()}
                   </span>
                   {product.originalPrice && product.originalPrice > product.price && (
                     <span className="text-lg text-gray-400 line-through mb-1">
-                      ${product.originalPrice.toLocaleString()}
+                      ₫{product.originalPrice.toLocaleString()}
                     </span>
                   )}
                 </div>

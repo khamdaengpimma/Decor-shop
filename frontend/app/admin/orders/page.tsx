@@ -348,7 +348,7 @@ export default function Orders() {
                       </span>
 
                       <span className="text-sm font-bold text-gray-900 flex-shrink-0">
-                        ${order.total.toLocaleString()}
+                        ₫{order.total.toLocaleString()}
                       </span>
 
                       <span className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
@@ -401,14 +401,14 @@ export default function Orders() {
                                   <span className="text-gray-400 ml-1">× {item.qty}</span>
                                 </span>
                                 <span className="font-semibold text-gray-900">
-                                  ${(item.price * item.qty).toLocaleString()}
+                                  ₫{(item.price * item.qty).toLocaleString()}
                                 </span>
                               </li>
                             ))}
                           </ul>
                           <div className="border-t border-gray-200 mt-3 pt-2 flex justify-between text-sm font-bold text-gray-900">
                             <span>Total</span>
-                            <span className="text-amber-500">${order.total.toLocaleString()}</span>
+                            <span className="text-amber-500">₫{order.total.toLocaleString()}</span>
                           </div>
                         </div>
 
