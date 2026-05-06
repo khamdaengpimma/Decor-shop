@@ -1,32 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
-type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+type OrderStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 interface OrderItem {
-  name?: string;
-  price?: number;
-  qty?: number;
+  name: string;
+  price: number;
+  qty: number;
 }
 
 interface Order {
   _id: string;
-  userId?: string;
-  items?: OrderItem[];
-  total?: number;
-  status?: OrderStatus;
-  createdAt?: string;
+  userId: string;
+
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+
+  items: OrderItem[];
+
+  total: number;
+  status: OrderStatus;
+  createdAt: string;
 }
 
 function getStoredUserId() {
   const directUserId = localStorage.getItem("userId");
+
   if (directUserId) return directUserId;
 
   const storedUser = localStorage.getItem("user");
+
   if (!storedUser) return "user001";
 
   try {
@@ -37,129 +51,308 @@ function getStoredUserId() {
 }
 
 const statusClass: Record<OrderStatus, string> = {
-  pending: "bg-amber-50 text-amber-600 border-amber-100",
-  processing: "bg-blue-50 text-blue-600 border-blue-100",
-  shipped: "bg-indigo-50 text-indigo-600 border-indigo-100",
-  delivered: "bg-emerald-50 text-emerald-600 border-emerald-100",
-  cancelled: "bg-red-50 text-red-600 border-red-100",
+  pending:
+    "bg-yellow-100 text-yellow-700 border-yellow-200",
+
+  processing:
+    "bg-blue-100 text-blue-700 border-blue-200",
+
+  shipped:
+    "bg-indigo-100 text-indigo-700 border-indigo-200",
+
+  delivered:
+    "bg-green-100 text-green-700 border-green-200",
+
+  cancelled:
+    "bg-red-100 text-red-700 border-red-200",
 };
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] =
+    useState(false);
 
   useEffect(() => {
     const loadOrders = async () => {
       const token = localStorage.getItem("token");
+
       if (!token) {
-        setOrdersLoading(false);
+        setLoading(false);
         return;
       }
 
       setIsLoggedIn(true);
-      const userId = getStoredUserId();
-      setOrdersLoading(true);
 
       try {
-        const res = await axios.get("http://localhost:5000/api/orders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const orderList = Array.isArray(res.data) ? res.data : [];
-        setOrders(
-          orderList
-            .filter((order: Order) => order.userId === userId)
-            .sort(
-              (a: Order, b: Order) =>
-                new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
-            )
+        const userId = getStoredUserId();
+
+        const res = await axios.get(
+          "http://localhost:5000/api/orders",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-      } catch {
+
+        const orderList = Array.isArray(res.data)
+          ? res.data
+          : [];
+
+        const filteredOrders = orderList
+          .filter(
+            (order: Order) =>
+              order.userId === userId
+          )
+          .sort(
+            (a: Order, b: Order) =>
+              new Date(b.createdAt).getTime() -
+              new Date(a.createdAt).getTime()
+          );
+
+        setOrders(filteredOrders);
+      } catch (error) {
+        console.error(error);
         setOrders([]);
       } finally {
-        setOrdersLoading(false);
+        setLoading(false);
       }
     };
 
     void loadOrders();
   }, []);
 
+  const totalSpent = useMemo(() => {
+    return orders.reduce(
+      (sum, order) => sum + order.total,
+      0
+    );
+  }, [orders]);
+
   return (
-    <div className="bg-[#f7f5f2] min-h-screen font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-[#faf7f2] to-[#f2eee8]">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-amber-500 uppercase tracking-widest">Your Purchases</p>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">Orders You Bought</h1>
-          <p className="text-sm text-gray-500 mt-1">{orders.length} orders</p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* HEADER */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-500">
+              Purchase History
+            </p>
+
+            <h1 className="mt-2 text-3xl sm:text-4xl font-black text-gray-900">
+              Your Orders
+            </h1>
+
+            <p className="mt-2 text-gray-500">
+              View all your purchases and order
+              tracking
+            </p>
+          </div>
+
+          {/* STATS */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 min-w-[140px]">
+              <p className="text-xs text-gray-400 uppercase font-bold">
+                Orders
+              </p>
+
+              <h3 className="mt-2 text-3xl font-black text-gray-900">
+                {orders.length}
+              </h3>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 min-w-[140px]">
+              <p className="text-xs text-gray-400 uppercase font-bold">
+                Total Spent
+              </p>
+
+              <h3 className="mt-2 text-3xl font-black text-amber-500">
+                ${totalSpent.toLocaleString()}
+              </h3>
+            </div>
+          </div>
         </div>
 
+        {/* LOGIN REQUIRED */}
         {!isLoggedIn ? (
-          <div className="bg-white border border-gray-100 rounded-2xl px-5 py-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <h4 className="text-sm font-bold text-gray-800">Please log in to view your orders</h4>
-              <p className="text-xs text-gray-400 mt-1">Sign in to see all your purchases and order history.</p>
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center">
+            <div className="text-5xl mb-4">
+              🔐
             </div>
-            <Link href="/login" className="text-sm font-semibold text-amber-600 hover:text-amber-700">
+
+            <h2 className="text-2xl font-black text-gray-900">
+              Login Required
+            </h2>
+
+            <p className="mt-2 text-gray-500">
+              Please sign in to view your order
+              history
+            </p>
+
+            <Link
+              href="/login"
+              className="inline-flex mt-6 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold transition"
+            >
               Sign In
             </Link>
           </div>
-        ) : ordersLoading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-56 rounded-2xl bg-gray-200 animate-pulse" />
-            ))}
+        ) : loading ? (
+          /* LOADING */
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map(
+              (_, i) => (
+                <div
+                  key={i}
+                  className="h-[420px] rounded-3xl bg-gray-200 animate-pulse"
+                />
+              )
+            )}
           </div>
         ) : orders.length === 0 ? (
-          <div className="bg-white border border-gray-100 rounded-2xl px-5 py-12 shadow-sm flex flex-col items-center justify-center text-center">
-            <p className="text-4xl mb-3">📦</p>
-            <h4 className="text-sm font-bold text-gray-800">No orders yet</h4>
-            <p className="text-xs text-gray-400 mt-1">Products you buy will appear here after checkout.</p>
-            <Link href="/products" className="mt-4 text-sm font-semibold text-amber-600 hover:text-amber-700">
-              Start shopping
+          /* EMPTY */
+          <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm text-center">
+            <div className="text-6xl">
+              📦
+            </div>
+
+            <h2 className="mt-5 text-2xl font-black text-gray-900">
+              No Orders Yet
+            </h2>
+
+            <p className="mt-2 text-gray-500">
+              Your purchased products will appear
+              here
+            </p>
+
+            <Link
+              href="/products"
+              className="inline-flex mt-6 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold transition"
+            >
+              Start Shopping
             </Link>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          /* ORDERS */
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
             {orders.map((order) => {
-              const status = order.status || "pending";
-              const items = order.items || [];
-              const created = order.createdAt
-                ? new Date(order.createdAt).toLocaleDateString()
-                : "Recent order";
+              const createdDate =
+                new Date(
+                  order.createdAt
+                ).toLocaleDateString();
 
               return (
-                <article key={order._id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs text-gray-400">{created}</p>
-                      <h4 className="mt-1 text-sm font-extrabold text-gray-900">
-                        Order #{order._id.slice(-8).toUpperCase()}
-                      </h4>
-                    </div>
-                    <span className={`px-2.5 py-1 rounded-full border text-[11px] font-bold capitalize ${statusClass[status]}`}>
-                      {status}
-                    </span>
-                  </div>
+                <article
+                  key={order._id}
+                  className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 overflow-hidden"
+                >
+                  {/* TOP BAR */}
+                  <div className="p-5 border-b border-gray-100">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs text-gray-400">
+                          {createdDate}
+                        </p>
 
-                  <div className="mt-3 space-y-1">
-                    {items.slice(0, 2).map((item, index) => (
-                      <div key={`${order._id}-${index}`} className="flex justify-between gap-3 text-xs text-gray-500">
-                        <span className="line-clamp-1">{item.name || "Product"}</span>
-                        <span className="font-semibold">x{item.qty || 1}</span>
+                        <h2 className="mt-1 text-lg font-black text-gray-900">
+                          #
+                          {order._id
+                            .slice(-8)
+                            .toUpperCase()}
+                        </h2>
                       </div>
-                    ))}
-                    {items.length > 2 && (
-                      <p className="text-xs text-gray-400">
-                        +{items.length - 2} more item{items.length - 2 === 1 ? "" : "s"}
-                      </p>
-                    )}
+
+                      <span
+                        className={`px-3 py-1 rounded-full border text-xs font-bold capitalize ${
+                          statusClass[
+                            order.status
+                          ]
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-400">Total</span>
-                    <span className="text-sm font-extrabold text-amber-500">${(order.total || 0).toLocaleString()}</span>
+                  {/* CUSTOMER */}
+                  <div className="p-5 border-b border-gray-100">
+                    <h3 className="text-sm font-black text-gray-900 mb-4">
+                      Customer Info
+                    </h3>
+
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">
+                        👤 {order.name}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        📧 {order.email}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        📞 {order.phone}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        📍 {order.address}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* ITEMS */}
+                  <div className="p-5">
+                    <h3 className="text-sm font-black text-gray-900 mb-4">
+                      Order Items
+                    </h3>
+
+                    <div className="space-y-3">
+                      {order.items.map(
+                        (item, index) => {
+                          const subtotal =
+                            item.price * item.qty;
+
+                          return (
+                            <div
+                              key={`${order._id}-${index}`}
+                              className="flex items-center justify-between bg-gray-50 rounded-2xl p-3"
+                            >
+                              <div>
+                                <p className="font-bold text-gray-900 text-sm">
+                                  {item.name}
+                                </p>
+
+                                <p className="text-xs text-gray-400 mt-1">
+                                  $
+                                  {item.price.toLocaleString()}{" "}
+                                  × {item.qty}
+                                </p>
+                              </div>
+
+                              <div className="text-right">
+                                <p className="font-black text-amber-500">
+                                  $
+                                  {subtotal.toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+
+                    {/* TOTAL */}
+                    <div className="mt-5 pt-5 border-t border-gray-100 flex items-center justify-between">
+                      <span className="text-sm font-bold text-gray-500">
+                        Total Payment
+                      </span>
+
+                      <span className="text-2xl font-black text-amber-500">
+                        $
+                        {order.total.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 </article>
               );
