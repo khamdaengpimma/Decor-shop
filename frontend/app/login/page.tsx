@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
+import api from "@/lib/api";
 import Link from "next/link";
 
 interface MobileNavItem {
@@ -22,7 +22,7 @@ export default function Login() {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await api.post("/api/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
       if (res.data.user?._id) {
         localStorage.setItem("userId", res.data.user._id);

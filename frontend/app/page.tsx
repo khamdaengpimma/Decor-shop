@@ -2,14 +2,19 @@
 
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
-import axios from "axios";
+import api from "@/lib/api";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import type { Product } from "@/store/cart";
 
 async function getProducts() {
-  const res = await axios.get("http://localhost:5000/api/products");
-  return res.data;
+  try {
+    const res = await api.get("/api/products");
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return [];
+  }
 }
 
 export default function Home() {

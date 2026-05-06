@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart, selectTotal, selectCount, CartItem } from "@/store/cart";
-import axios from "axios";
+import api from "@/lib/api";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -100,12 +100,7 @@ export default function CartPage() {
         status: "pending",
       };
 
-      await axios.post("http://localhost:5000/api/orders", orderData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Optional but recommended
-        },
-      });
+      await api.post("/api/orders", orderData);
 
       // Success
       clear();
