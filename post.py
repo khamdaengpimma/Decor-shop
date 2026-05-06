@@ -254,7 +254,7 @@ products = [
         "stock": 6
     }
 ]
-
+#ok
 # Insert products
 for i, product in enumerate(products, start=1):
     try:
