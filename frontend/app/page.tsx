@@ -68,8 +68,16 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden sm:flex gap-3">
-            <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl bg-amber-200 opacity-60" />
-            <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl bg-orange-200 opacity-60 mt-6" />
+            <img
+              src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop&crop=center"
+              alt="Modern furniture"
+              className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl object-cover shadow-lg"
+            />
+            <img
+              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop&crop=center"
+              alt="Home decor"
+              className="w-24 h-24 lg:w-32 lg:h-32 rounded-2xl object-cover shadow-lg mt-6"
+            />
           </div>
         </div>
       </section>

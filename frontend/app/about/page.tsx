@@ -36,15 +36,20 @@ export default function AboutPage() {
           {/* Left: Images */}
           <div className={`relative transition-all duration-1000 ease-out ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <div className="aspect-[4/5] bg-gray-100 rounded-[2.5rem] overflow-hidden relative shadow-sm border border-white/50 group">
-              <div className="absolute inset-0 bg-gradient-to-tr from-amber-200/50 to-orange-100/50 mix-blend-multiply group-hover:opacity-80 transition-opacity" />
-              {/* Optional Placeholder for a real image */}
-              <div className="absolute inset-0 flex items-center justify-center text-8xl opacity-10">🛋️</div>
+              <img
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=500&fit=crop&crop=center"
+                alt="Modern living room interior"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-            
+
             <div className="absolute -bottom-10 -right-10 w-2/3 aspect-[4/3] bg-white rounded-3xl p-3 shadow-xl backdrop-blur-md bg-white/70 border border-white">
               <div className="w-full h-full bg-gray-50 rounded-2xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-bl from-rose-100/50 to-amber-50/50 mix-blend-multiply" />
-                <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-10">🪴</div>
+                <img
+                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=225&fit=crop&crop=center"
+                  alt="Home decor details"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               </div>
             </div>
           </div>
