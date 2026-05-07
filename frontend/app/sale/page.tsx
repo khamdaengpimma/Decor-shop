@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 interface Product {
   _id: string;
@@ -26,6 +27,7 @@ async function getProducts() {
 }
 
 export default function SalePage() {
+  const t = useTranslations();
   const [products, setProducts] =
     useState<Product[]>([]);
 
@@ -82,27 +84,24 @@ export default function SalePage() {
             {/* BADGE */}
 
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-rose-200 bg-white/70 backdrop-blur text-xs font-black uppercase tracking-[0.25em] text-rose-500 shadow-sm">
-              🔥 Trending Sale 2026
+              🔥 {t("sale.trendingSale")}
             </div>
 
             {/* TITLE */}
 
             <h1 className="mt-8 text-5xl sm:text-6xl lg:text-8xl font-black leading-none tracking-tight text-gray-900">
-              Modern
+              {t("sale.titleLine1")}
               <br />
 
               <span className="bg-gradient-to-r from-rose-500 to-orange-400 bg-clip-text text-transparent">
-                Flash Deals
+                {t("sale.titleLine2")}
               </span>
             </h1>
 
             {/* DESCRIPTION */}
 
             <p className="mt-8 text-lg text-gray-600 max-w-2xl leading-relaxed">
-              Discover premium modern
-              furniture and décor with
-              exclusive discounts from
-              5% to 30%.
+              {t("sale.description")}
             </p>
 
             {/* ACTIONS */}
@@ -122,7 +121,7 @@ export default function SalePage() {
                   shadow-xl
                 "
               >
-                Shop Collection
+                {t("sale.shopCollection")}
               </Link>
 
               <Link
@@ -141,7 +140,7 @@ export default function SalePage() {
                   transition
                 "
               >
-                View Cart
+                {t("sale.viewCart")}
               </Link>
             </div>
           </div>
@@ -156,11 +155,11 @@ export default function SalePage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12">
           <div>
             <p className="text-sm uppercase tracking-[0.25em] text-rose-500 font-black">
-              New Collection
+              {t("sale.newCollection")}
             </p>
 
             <h2 className="mt-3 text-4xl font-black text-gray-900">
-              Popular Products
+              {t("sale.popularProducts")}
             </h2>
           </div>
 
@@ -169,7 +168,7 @@ export default function SalePage() {
           <div className="flex items-center gap-4">
             <div className="px-5 py-3 rounded-2xl bg-white border border-gray-200 shadow-sm">
               <p className="text-xs text-gray-500 uppercase">
-                Active Deals
+                {t("sale.activeDeals")}
               </p>
 
               <h3 className="mt-1 text-2xl font-black text-rose-500">
@@ -179,7 +178,7 @@ export default function SalePage() {
 
             <div className="px-5 py-3 rounded-2xl bg-white border border-gray-200 shadow-sm">
               <p className="text-xs text-gray-500 uppercase">
-                Discount
+                {t("sale.discount")}
               </p>
 
               <h3 className="mt-1 text-2xl font-black text-orange-400">
@@ -248,7 +247,7 @@ export default function SalePage() {
                       "
                     >
                       <span className="text-[10px] uppercase tracking-[0.2em] font-black text-white">
-                        Limited Sale
+                        {t("sale.limitedSale")}
                       </span>
 
                       <span className="text-sm font-black text-white">
@@ -298,12 +297,7 @@ export default function SalePage() {
                         {/* SAVE */}
 
                         <p className="mt-2 text-xs font-bold text-green-600">
-                          Save ₫
-                          {(
-                            product.price -
-                            (product.salePrice ||
-                              0)
-                          ).toLocaleString()}
+                          {t("sale.saveAmount", { amount: (product.price - (product.salePrice || 0)).toLocaleString() })}
                         </p>
 
                         {/* BUTTON */}
@@ -321,7 +315,7 @@ export default function SalePage() {
                             transition
                           "
                         >
-                          Add To Cart
+                          {t("products.addToCart")}
                         </button>
                       </div>
                     </div>
