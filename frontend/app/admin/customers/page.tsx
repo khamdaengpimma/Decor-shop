@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { useTranslations } from "@/lib/i18n";
 /* ── Types ── */
 interface Customer {
   _id:       string;
@@ -19,19 +20,19 @@ interface Customer {
 
 type CustomerStatus = "active" | "inactive" | "banned";
 
-const STATUS_CONFIG: Record<CustomerStatus, { label: string; color: string; dot: string }> = {
-  active:   { label: "Active",   color: "bg-green-100 text-green-700", dot: "bg-green-400"  },
-  inactive: { label: "Inactive", color: "bg-gray-100  text-gray-500",  dot: "bg-gray-400"   },
-  banned:   { label: "Banned",   color: "bg-red-100   text-red-500",   dot: "bg-red-400"    },
-};
+const STATUS_CONFIG = (t: any): Record<CustomerStatus, { label: string; color: string; dot: string }> => ({
+  active:   { label: t("admin.customerStatuses.active"),   color: "bg-green-100 text-green-700", dot: "bg-green-400"  },
+  inactive: { label: t("admin.customerStatuses.inactive"), color: "bg-gray-100  text-gray-500",  dot: "bg-gray-400"   },
+  banned:   { label: t("admin.customerStatuses.banned"),   color: "bg-red-100   text-red-500",   dot: "bg-red-400"    },
+});
 
 /* ── Sidebar nav ── */
 const NAV_ITEMS = [
-  { href: "/admin",           label: "Dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-  { href: "/admin/products",  label: "Products",  icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" },
-  { href: "/admin/orders",    label: "Orders",    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
-  { href: "/admin/customers", label: "Customers", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M9 7a4 4 0 100 8 4 4 0 000-8z" },
-  { href: "/admin/settings",  label: "Settings",  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+  { href: "/admin",           label: "admin.dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+  { href: "/admin/products",  label: "admin.nav.products",  icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" },
+  { href: "/admin/orders",    label: "admin.nav.orders",    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+  { href: "/admin/customers", label: "admin.nav.customers", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M9 7a4 4 0 100 8 4 4 0 000-8z" },
+  { href: "/admin/settings",  label: "admin.nav.settings",  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
 ];
 
 function fmt(date: string) {
@@ -58,6 +59,7 @@ function avatarColor(id: string) {
 }
 
 export default function Customers() {
+  const t = useTranslations();
   const router   = useRouter();
   const pathname = usePathname();
 
@@ -146,7 +148,7 @@ export default function Customers() {
               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
               </svg>
-              {label}
+              {t(label)}
             </Link>
           );
         })}
@@ -157,7 +159,7 @@ export default function Customers() {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
           </svg>
-          Logout
+          {t("admin.nav.logout")}
         </button>
       </div>
     </div>
@@ -192,7 +194,7 @@ export default function Customers() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-1">Customers</h1>
+          <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-1">{t("admin.nav.customers")}</h1>
           <span className="text-xs text-gray-400 hidden sm:block" suppressHydrationWarning>
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </span>
@@ -242,7 +244,7 @@ export default function Customers() {
                       ? "bg-amber-500 text-white shadow-sm"
                       : "bg-white border border-gray-200 text-gray-500 hover:bg-gray-50"}`}
                 >
-                  {s === "all" ? "All" : STATUS_CONFIG[s].label}
+                  {s === "all" ? "All" : STATUS_CONFIG(t)[s].label}
                   <span className={`ml-1 ${filter === s ? "text-amber-100" : "text-gray-400"}`}>
                     {counts[s] ?? 0}
                   </span>
@@ -273,7 +275,7 @@ export default function Customers() {
             <ul className="space-y-3">
               {visible.map((customer) => {
                 const status     = customer.status ?? "active";
-                const cfg        = STATUS_CONFIG[status];
+                const cfg        = STATUS_CONFIG(t)[status];
                 const isExpanded = expanded === customer._id;
                 const isUpdating = updating === customer._id;
 
@@ -355,7 +357,7 @@ export default function Customers() {
                               className="text-xs border border-black rounded-lg px-2 py-1.5 bg-white text-black focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 transition"
                             >
                               {(["active","inactive","banned"] as CustomerStatus[]).map((s) => (
-                                <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
+                                <option key={s} value={s}>{STATUS_CONFIG(t)[s].label}</option>
                               ))}
                             </select>
                             {isUpdating && (

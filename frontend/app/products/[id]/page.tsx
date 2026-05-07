@@ -6,8 +6,10 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart, selectItemQty, selectCount, Product } from "@/store/cart";
 import Navbar from "@/components/Navbar";
+import { useTranslations } from "@/lib/i18n";
 
 export default function ProductDetailPage() {
+  const t = useTranslations();
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
@@ -66,13 +68,13 @@ export default function ProductDetailPage() {
     return (
       <div className="bg-[#f7f5f2] min-h-screen font-sans flex flex-col items-center justify-center p-4">
         <p className="text-6xl mb-4">🌿</p>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Product Not Found</h1>
-        <p className="text-gray-500 mb-6 text-center">We couldn't locate the product you were looking for.</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">{t("product.notFoundTitle")}</h1>
+        <p className="text-gray-500 mb-6 text-center">{t("product.notFoundMessage")}</p>
         <button 
           onClick={() => router.back()}
           className="px-6 py-2 bg-amber-500 text-white rounded-full font-semibold shadow hover:bg-amber-600 transition"
         >
-          Go Back
+          {t("product.goBack")}
         </button>
       </div>
     );
@@ -89,9 +91,9 @@ export default function ProductDetailPage() {
       {/* ── BREADCRUMB ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 w-full">
         <nav className="flex text-xs text-gray-500 pb-2">
-          <Link href="/" className="hover:text-amber-500 transition">Home</Link>
+          <Link href="/" className="hover:text-amber-500 transition">{t("product.breadcrumbHome")}</Link>
           <span className="mx-2">/</span>
-          <Link href="/products" className="hover:text-amber-500 transition">Products</Link>
+          <Link href="/products" className="hover:text-amber-500 transition">{t("product.breadcrumbProducts")}</Link>
           <span className="mx-2">/</span>
           <span className="text-gray-800 font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
@@ -151,22 +153,22 @@ export default function ProductDetailPage() {
               {/* Status */}
               <div className="mb-6 space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-500 w-20">Availability:</span>
+                  <span className="text-sm font-medium text-gray-500 w-20">{t("product.availability")}:</span>
                   {soldOut ? (
                     <span className="text-sm font-semibold text-red-500 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-red-500"></span> Out of Stock
+                      <span className="w-2 h-2 rounded-full bg-red-500"></span> {t("product.outOfStock")}
                     </span>
                   ) : (
                     <span className="text-sm font-semibold text-emerald-600 flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-500"></span> 
-                      In Stock {product.stock ? `(${product.stock} available)` : ''}
+                      {t("product.inStock", { count: product.stock || 0 })}
                     </span>
                   )}
                 </div>
                 
                 {product.category && (
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-500 w-20">Category:</span>
+                    <span className="text-sm font-medium text-gray-500 w-20">{t("product.categoryLabel")}:</span>
                     <span className="text-sm font-medium text-gray-900">{product.category}</span>
                   </div>
                 )}
@@ -174,9 +176,9 @@ export default function ProductDetailPage() {
 
               {/* Description (Mocked or real if available in product type) */}
               <div className="mb-8">
-                <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Description</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">{t("product.descriptionTitle")}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  {(product as any).description || "This premium decor piece brings a touch of elegance and style to any modern living space. Crafted with attention to detail and designed to stand out, it perfectly complements both contemporary and classic interior themes."}
+                  {(product as any).description || t("product.descriptionText")}
                 </p>
               </div>
 
@@ -184,7 +186,7 @@ export default function ProductDetailPage() {
               <div className="mt-auto pt-6 border-t border-gray-100">
                 {soldOut ? (
                   <button disabled className="w-full py-4 rounded-2xl bg-gray-100 text-gray-400 font-bold text-lg cursor-not-allowed">
-                    Currently Unavailable
+                    {t("product.currentlyUnavailable")}
                   </button>
                 ) : !inCart ? (
                   <button 
@@ -194,12 +196,12 @@ export default function ProductDetailPage() {
                     {added ? (
                       <>
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                        Added to Cart
+                        {t("product.addedToCart")}
                       </>
                     ) : (
                       <>
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                        Add to Cart
+                        {t("product.addToCart")}
                       </>
                     )}
                   </button>
@@ -216,7 +218,7 @@ export default function ProductDetailPage() {
                       </button>
                       
                       <div className="flex flex-col items-center justify-center px-4">
-                        <span className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">Quantity</span>
+                        <span className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-0.5">{t("product.quantity")}</span>
                         <span className="text-xl font-bold text-gray-900 leading-none">{qty}</span>
                       </div>
                       
@@ -228,7 +230,7 @@ export default function ProductDetailPage() {
                       </button>
                     </div>
                     <Link href="/cart" className="w-full py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm text-center transition-colors">
-                      Proceed to Checkout
+                      {t("product.proceedToCheckout")}
                     </Link>
                   </div>
                 )}
@@ -241,12 +243,12 @@ export default function ProductDetailPage() {
       {/* ── MOBILE BOTTOM NAV ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex md:hidden">
         {[
-          { label: "Home",    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
-          { label: "Shop",    icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z",          href: "/products" },
-          { label: "Cart",    icon: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0", href: "/cart" },
+          { label: t("navbar.home"),    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
+          { label: t("navbar.shop"),    icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z",          href: "/products" },
+          { label: t("navbar.cart"),    icon: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0", href: "/cart" },
           isLoggedIn
-            ? { label: "Logout",  icon: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1", href: "#", onClick: handleLogout }
-            : { label: "Register", icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z", href: "/register" },
+            ? { label: t("navbar.logout"),  icon: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1", href: "#", onClick: handleLogout }
+            : { label: t("navbar.register"), icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z", href: "/register" },
         ].map(({ label, icon, href, onClick }: any) => (
           <a
             key={label}

@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import api from "@/lib/api";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useTranslations } from "@/lib/i18n";
 import type { Product } from "@/store/cart";
 
 async function getProducts() {
@@ -18,6 +19,7 @@ async function getProducts() {
 }
 
 export default function Home() {
+  const t = useTranslations();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -43,27 +45,25 @@ export default function Home() {
       <section className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex flex-col sm:flex-row items-center gap-6">
           <div className="flex-1 text-center sm:text-left">
-            <p className="text-xs sm:text-sm font-semibold text-amber-500 uppercase tracking-widest mb-2">New Arrivals</p>
+            <p className="text-xs sm:text-sm font-semibold text-amber-500 uppercase tracking-widest mb-2">{t("home.newArrivals")}</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">
-              Style Your <br className="hidden sm:block" />Living Space
+              {t("home.heroTitle")}
             </h2>
             <p className="mt-3 text-sm sm:text-base text-gray-500 max-w-md">
-              Curated home décor to make every corner feel like yours.
+              {t("home.heroDescription")}
             </p>
             <div className="mt-5 flex items-center gap-3 justify-center sm:justify-start flex-wrap">
-              
-
-<Link
-  href="/products"
-  className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
->
-  Shop Now
-</Link>
+              <Link
+                href="/products"
+                className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
+              >
+                {t("home.shopNow")}
+              </Link>
               <a
                 href="/register"
                 className="px-6 py-2.5 border border-amber-300 text-amber-600 hover:bg-amber-50 text-sm font-semibold rounded-full transition-colors"
               >
-                Create Account
+                {t("home.createAccount")}
               </a>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function Home() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search products..."
+              placeholder={t("home.searchPlaceholder")}
               className="w-full pl-9 pr-4 py-2.5 border border-black rounded-full bg-white text-black text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
           </div>
@@ -95,16 +95,16 @@ export default function Home() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <line x1="4" y1="6" x2="20" y2="6" /><line x1="8" y1="12" x2="16" y2="12" /><line x1="11" y1="18" x2="13" y2="18" />
             </svg>
-            Filter
+            {t("home.filter")}
           </button>
         </div>
 
         {/* Section title */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base sm:text-lg font-bold text-gray-900">
-            {search ? `Results for "${search}"` : "All Products"}
+            {search ? t("home.resultsFor", { search }) : t("home.allProducts")}
           </h3>
-          <span className="text-xs text-gray-400">{filtered.length} items</span>
+          <span className="text-xs text-gray-400">{t("home.items", { count: filtered.length })}</span>
         </div>
 
         {/* Loading skeleton */}

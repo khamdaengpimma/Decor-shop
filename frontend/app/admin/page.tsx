@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { useTranslations } from "@/lib/i18n";
 /* ── Types ── */
 interface Stats {
   totalProducts: number;
@@ -14,44 +15,45 @@ interface Stats {
 }
 
 const NAV_ITEMS = [
-  { href: "/admin/products", label: "Products",  icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" },
-  { href: "/admin/orders",   label: "Orders",    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
-  { href: "/admin/customers",label: "Customers", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M9 7a4 4 0 100 8 4 4 0 000-8z" },
-  { href: "/admin/settings", label: "Settings",  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+  { href: "/admin/products", label: "admin.nav.products",  icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z" },
+  { href: "/admin/orders",   label: "admin.nav.orders",    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+  { href: "/admin/customers",label: "admin.nav.customers", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M9 7a4 4 0 100 8 4 4 0 000-8z" },
+  { href: "/admin/settings", label: "admin.nav.settings",  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
 ];
 
-const STAT_CARDS = (s: Stats) => [
+const STAT_CARDS = (s: Stats, t: any) => [
   {
-    label: "Total Products",
+    label: t("admin.stats.totalProducts"),
     value: s.totalProducts,
     icon:  "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z",
     color: "bg-blue-50 text-blue-600",
-    trend: "+3 this week",
+    trend: t("admin.stats.productsTrend"),
   },
   {
-    label: "Total Orders",
+    label: t("admin.stats.totalOrders"),
     value: s.totalOrders,
     icon:  "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
     color: "bg-amber-50 text-amber-600",
-    trend: `${s.pendingOrders} pending`,
+    trend: t("admin.stats.ordersTrend", { count: s.pendingOrders }),
   },
   {
-    label: "Revenue",
+    label: t("admin.stats.revenue"),
     value: `₫${s.revenue.toLocaleString()}`,
     icon:  "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     color: "bg-green-50 text-green-600",
-    trend: "+12% this month",
+    trend: t("admin.stats.revenueTrend"),
   },
   {
-    label: "Pending Orders",
+    label: t("admin.stats.pendingOrders"),
     value: s.pendingOrders,
     icon:  "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
     color: "bg-red-50 text-red-500",
-    trend: "Needs attention",
+    trend: t("admin.stats.pendingTrend"),
   },
 ];
 
 export default function Admin() {
+  const t = useTranslations();
   const router   = useRouter();
   const pathname = usePathname();
 
@@ -139,8 +141,8 @@ export default function Admin() {
               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
               </svg>
-              {label}
-              {label === "Orders" && stats.pendingOrders > 0 && (
+              {t(label)}
+              {label === "admin.nav.orders" && stats.pendingOrders > 0 && (
                 <span className="ml-auto bg-red-100 text-red-500 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                   {stats.pendingOrders}
                 </span>
@@ -159,7 +161,7 @@ export default function Admin() {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
           </svg>
-          Logout
+          {t("admin.nav.logout")}
         </button>
       </div>
     </div>
@@ -205,7 +207,7 @@ export default function Admin() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-1">Dashboard</h1>
+          <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-1">{t("admin.dashboard")}</h1>
           <span className="text-xs text-gray-400 hidden sm:block">
             {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
           </span>
@@ -216,13 +218,13 @@ export default function Admin() {
 
           {/* Welcome */}
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Welcome back 👋</h2>
-            <p className="text-sm text-gray-500 mt-1">Here's what's happening in your store today.</p>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{t("admin.welcomeBack")}</h2>
+            <p className="text-sm text-gray-500 mt-1">{t("admin.welcomeMessage")}</p>
           </div>
 
           {/* ── Stat cards ── */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {STAT_CARDS(stats).map(({ label, value, icon, color, trend }) => (
+            {STAT_CARDS(stats, t).map(({ label, value, icon, color, trend }) => (
               <div key={label} className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 flex flex-col gap-3">
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -240,7 +242,7 @@ export default function Admin() {
 
           {/* ── Quick links ── */}
           <div>
-            <h3 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Quick Actions</h3>
+            <h3 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">{t("admin.quickActions")}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
                 href="/admin/products"
@@ -248,8 +250,8 @@ export default function Admin() {
               >
                 <span className="w-9 h-9 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-lg group-hover:bg-amber-100 transition">+</span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">View Products</p>
-                  <p className="text-xs text-gray-400">Upload photos, set price & stock</p>
+                  <p className="text-sm font-semibold text-gray-800">{t("admin.viewProducts")}</p>
+                  <p className="text-xs text-gray-400">{t("admin.viewProductsDesc")}</p>
                 </div>
               </Link>
               <Link
@@ -262,8 +264,8 @@ export default function Admin() {
                   </svg>
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">View Orders</p>
-                  <p className="text-xs text-gray-400">{stats.pendingOrders} pending — needs review</p>
+                  <p className="text-sm font-semibold text-gray-800">{t("admin.viewOrders")}</p>
+                  <p className="text-xs text-gray-400">{t("admin.viewOrdersDesc", { count: stats.pendingOrders })}</p>
                 </div>
               </Link>
             </div>

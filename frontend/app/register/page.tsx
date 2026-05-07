@@ -4,8 +4,10 @@ import { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 export default function Register() {
+  const t = useTranslations();
   const router = useRouter();
 
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -19,7 +21,7 @@ export default function Register() {
 
   const handleRegister = async () => {
     if (!form.name || !form.email || !form.password) {
-      setError("Please fill in all fields.");
+      setError(t("register.fillFields"));
       return;
     }
     setLoading(true);
@@ -28,7 +30,7 @@ export default function Register() {
       await api.post("/api/users", form);
       router.push("/login");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      setError(err.response?.data?.message || t("register.registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -41,23 +43,23 @@ export default function Register() {
   const fields = [
     {
       name: "name",
-      label: "Full Name",
+      label: "register.fullName",
       type: "text",
-      placeholder: "John Doe",
+      placeholder: "register.namePlaceholder",
       icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
     },
     {
       name: "email",
-      label: "Email",
+      label: "register.email",
       type: "email",
-      placeholder: "admin@example.com",
+      placeholder: "register.emailPlaceholder",
       icon: "M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207",
     },
     {
       name: "password",
-      label: "Password",
+      label: "register.password",
       type: "password",
-      placeholder: "••••••••",
+      placeholder: "register.passwordPlaceholder",
       icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
     },
   ];
@@ -71,7 +73,7 @@ export default function Register() {
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
             Décor<span className="text-amber-500">Shop</span>
           </span>
-          <p className="text-xs text-gray-400 mt-0.5">Create a new admin account</p>
+          <p className="text-xs text-gray-400 mt-0.5">{t("register.subtitle")}</p>
         </div>
 
         {/* Body */}
@@ -89,7 +91,7 @@ export default function Register() {
 
           {fields.map(({ name, label, type, placeholder, icon }) => (
             <div key={name}>
-              <label className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
+              <label className="block text-xs font-semibold text-gray-500 mb-1">{t(label)}</label>
               <div className="relative">
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
@@ -97,7 +99,7 @@ export default function Register() {
                 <input
                   name={name}
                   type={type}
-                  placeholder={placeholder}
+                  placeholder={t(placeholder)}
                   value={(form as any)[name]}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
@@ -121,20 +123,20 @@ export default function Register() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
             )}
-            {loading ? "Creating account…" : "Create Account"}
+            {loading ? t("register.creatingAccount") : t("register.createAccount")}
           </button>
 
           <p className="text-center text-xs text-gray-400">
-            Already have an account?{" "}
+            {t("register.alreadyHave")} {" "}
             <a href="/login" className="text-amber-500 font-semibold hover:text-amber-600 transition">
-              Sign in
+              {t("register.signIn")}
             </a>
           </p>
         </div>
             {/* ── MOBILE BOTTOM NAV ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex md:hidden">
         {[
-          { label: "Home",    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
+          { label: t("navbar.home"),    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
           
         ].map(({ label, icon, href, active, action }: any) => (
           <Link key={label} href={href} onClick={action}

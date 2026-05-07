@@ -17,6 +17,7 @@ import {
 
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useTranslations } from "@/lib/i18n";
 
 interface CheckoutForm {
   name: string;
@@ -33,6 +34,7 @@ const EMPTY_FORM: CheckoutForm = {
 };
 
 export default function CartPage() {
+  const t = useTranslations();
   const {
     items: cart,
     remove,
@@ -108,23 +110,23 @@ export default function CartPage() {
     const e: Partial<CheckoutForm> = {};
 
     if (!form.name.trim()) {
-      e.name = "Name required";
+      e.name = t("cart.nameRequired");
     }
 
     if (!form.email.trim()) {
-      e.email = "Email required";
+      e.email = t("cart.emailRequired");
     } else if (
       !/\S+@\S+\.\S+/.test(form.email)
     ) {
-      e.email = "Invalid email";
+      e.email = t("cart.invalidEmail");
     }
 
     if (!form.phone.trim()) {
-      e.phone = "Phone required";
+      e.phone = t("cart.phoneRequired");
     }
 
     if (!form.address.trim()) {
-      e.address = "Address required";
+      e.address = t("cart.addressRequired");
     }
 
     setErrors(e);
@@ -216,19 +218,18 @@ export default function CartPage() {
             </div>
 
             <h1 className="text-3xl font-black text-gray-900">
-              Order Successful
+              {t("cart.thankYouTitle")}
             </h1>
 
             <p className="mt-3 text-gray-500">
-              Thank you for your
-              purchase.
+              {t("cart.thankYouMessage")}
             </p>
 
             <Link
               href="/orders"
               className="inline-flex mt-8 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold transition"
             >
-              View Orders
+              {t("cart.viewOrders")}
             </Link>
           </div>
         </main>
@@ -245,16 +246,15 @@ export default function CartPage() {
 
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-500">
-            Checkout
+            {t("cart.checkoutLabel")}
           </p>
 
           <h1 className="mt-2 text-4xl font-black text-gray-900">
-            Shopping Cart
+            {t("cart.shoppingCart")}
           </h1>
 
           <p className="mt-2 text-gray-500">
-            {count} items ready for
-            checkout
+            {t("cart.itemsReady", { count })}
           </p>
         </div>
 
@@ -267,18 +267,18 @@ export default function CartPage() {
             </div>
 
             <h2 className="mt-5 text-3xl font-black text-gray-900">
-              Cart Empty
+              {t("cart.emptyTitle")}
             </h2>
 
             <p className="mt-2 text-gray-500">
-              Add some products first
+              {t("cart.emptyMessage")}
             </p>
 
             <Link
               href="/products"
               className="inline-flex mt-8 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold"
             >
-              Browse Products
+              {t("cart.browseProducts")}
             </Link>
           </div>
         ) : (
@@ -338,7 +338,7 @@ export default function CartPage() {
                           <p className="mt-1 text-sm text-gray-400">
                             ₫
                             {item.product.price.toLocaleString()}{" "}
-                            each
+                            {t("cart.each")}
                           </p>
 
                           <p className="mt-3 text-xxl font-black text-amber-800">
@@ -397,7 +397,7 @@ export default function CartPage() {
 
               <div className="bg-white rounded-3xl border border-gray-100 p-6">
                 <h2 className="text-xl font-black text-gray-900">
-                  Delivery Information
+                  {t("cart.deliveryInfo")}
                 </h2>
 
                 <div className="mt-6 grid gap-4">
@@ -417,7 +417,7 @@ export default function CartPage() {
                             ? "email"
                             : "text"
                         }
-                        placeholder={`Enter ${field}`}
+                        placeholder={t("cart.enterField", { field })}
                         value={
                           form[field]
                         }
@@ -478,7 +478,7 @@ export default function CartPage() {
             <div>
               <div className="bg-white rounded-3xl border border-gray-100 p-6 sticky top-6">
                 <h2 className="text-2xl font-black text-gray-900">
-                  Order Summary
+                  {t("cart.orderSummary")}
                 </h2>
 
                 {/* SUMMARY */}
@@ -486,7 +486,7 @@ export default function CartPage() {
                 <div className="mt-6 space-y-4">
                   <div className="flex justify-between text-gray-500">
                     <span>
-                      Subtotal
+                      {t("cart.subtotal")}
                     </span>
 
                     <span>
@@ -497,20 +497,20 @@ export default function CartPage() {
 
                   <div className="flex justify-between text-gray-500">
                     <span>
-                      Shipping
+                      {t("cart.shipping")}
                     </span>
 
                     <span>
                       {shipping ===
                       0
-                        ? "Free"
+                        ? t("cart.free")
                         : `$${shipping}`}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-gray-500">
                     <span>
-                      Tax (10%)
+                      {t("cart.tax")}
                     </span>
 
                     <span>
@@ -521,7 +521,7 @@ export default function CartPage() {
 
                   <div className="border-t border-gray-100 pt-4 flex justify-between">
                     <span className="text-lg font-black text-gray-900">
-                      Grand Total
+                      {t("cart.grandTotal")}
                     </span>
 
                     <span className="text-3xl font-black text-amber-500">
@@ -542,16 +542,15 @@ export default function CartPage() {
                   className="mt-8 w-full bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 text-white py-4 rounded-2xl font-black text-lg transition"
                 >
                   {loading
-                    ? "Processing..."
+                    ? t("cart.processing")
                     : !isLoggedIn
-                    ? "Login Required"
-                    : `Checkout • ₫${grandTotal.toLocaleString()}`}
+                    ? t("cart.loginRequired")
+                    : t("cart.checkoutButton", { total: grandTotal.toLocaleString() })}
                 </button>
 
                 {!isLoggedIn && (
                   <p className="mt-3 text-sm text-center text-amber-600">
-                    Please login to
-                    continue
+                    {t("cart.pleaseLogin")}
                   </p>
                 )}
               </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import GlobalDecor from "@/components/GlobalDecor";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -31,8 +32,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        {children}
-        <GlobalDecor />
+        <Providers>
+          {children}
+          <GlobalDecor />
+        </Providers>
       </body>
     </html>
   );

@@ -3,8 +3,10 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslations } from "@/lib/i18n";
 
 export default function AboutPage() {
+  const t = useTranslations();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -19,13 +21,10 @@ export default function AboutPage() {
         
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-10">
           <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
-            Redefining <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-400">
-              Modern Spaces
-            </span>
+            {t("about.heroTitle")}
           </h1>
           <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-600 font-light leading-relaxed mb-10">
-            At DécorShop, we believe that your home should be a reflection of your unique identity. Curating premium, sustainable, and timeless furniture designed to elevate every corner of your life.
+            {t("about.heroDescription")}
           </p>
         </div>
       </section>
@@ -53,30 +52,26 @@ export default function AboutPage() {
           {/* Right: Text */}
           <div className="pl-0 md:pl-10 space-y-8 mt-16 md:mt-0">
             <div>
-              <span className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-2 block">Our Story</span>
+              <span className="text-sm font-bold text-amber-500 tracking-widest uppercase mb-2 block">{t("about.ourStoryLabel")}</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-snug">
-                Craftsmanship meets contemporary aesthetics.
+                {t("about.ourStoryTitle")}
               </h2>
             </div>
             
             <div className="space-y-4 text-gray-600 leading-relaxed font-light">
-              <p>
-                Founded in 2024, DécorShop began as a small boutique conceptualized by a team of passionate architects and interior designers. We were tired of the "fast furniture" movement and wanted to build pieces that endure—both in style and substance.
-              </p>
-              <p>
-                We partner globally with ethical artisans to bring you handcrafted items that blend minimalism with functional warmth. Our materials are sustainably sourced, and our designs are obsessively iterated upon.
-              </p>
+              <p>{t("about.paragraph1")}</p>
+              <p>{t("about.paragraph2")}</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-8 pt-6 border-t border-gray-100">
               <div>
                 <p className="text-4xl font-extrabold text-gray-900">10k+</p>
-                <p className="text-sm text-gray-500 mt-1 font-medium">Happy Homes</p>
+                <p className="text-sm text-gray-500 mt-1 font-medium">{t("about.statHomes")}</p>
               </div>
               <div>
                 <p className="text-4xl font-extrabold text-gray-900">4.9</p>
-                <p className="text-sm text-gray-500 mt-1 font-medium">Average Studio Rating</p>
+                <p className="text-sm text-gray-500 mt-1 font-medium">{t("about.statRating")}</p>
               </div>
             </div>
           </div>
@@ -87,13 +82,13 @@ export default function AboutPage() {
       {/* ── VALUES SECTION ── */}
       <section className="bg-white py-24 border-y border-gray-100 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-16">The DécorShop Promise</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-16">{t("about.promiseTitle")}</h2>
           
           <div className="grid sm:grid-cols-3 gap-10">
             {[
-              { icon: "🌱", title: "Sustainable Materials", desc: "Crafted using ethically sourced wood and recycled fabrics to protect our planet." },
-              { icon: "✨", title: "Timeless Design", desc: "Aesthetic structures intended to look stunning today and decades from now." },
-              { icon: "🛡️", title: "Lifetime Warranty", desc: "We stand entirely behind the durability and craftsmanship of our entire catalog." },
+              { icon: "🌱", title: t("about.promise1.title"), desc: t("about.promise1.desc") },
+              { icon: "✨", title: t("about.promise2.title"), desc: t("about.promise2.desc") },
+              { icon: "🛡️", title: t("about.promise3.title"), desc: t("about.promise3.desc") },
             ].map((val, i) => (
               <div key={i} className="flex flex-col items-center bg-gray-50/50 p-8 rounded-[2rem] hover:bg-amber-50/30 transition-colors border border-transparent hover:border-amber-100/50">
                 <div className="w-16 h-16 bg-white shadow-sm rounded-full flex items-center justify-center text-2xl mb-6">
@@ -109,12 +104,12 @@ export default function AboutPage() {
 
       {/* ── CTA ── */}
       <section className="py-32 text-center pb-40">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Ready to upgrade your living space?</h2>
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">{t("about.ctaTitle")}</h2>
         <p className="text-gray-500 mb-10 max-w-lg mx-auto">
-          Explore our latest collection of premium interior essentials.
+          {t("about.ctaSubtitle")}
         </p>
         <Link href="/products" className="inline-block px-10 py-4 bg-gray-900 hover:bg-amber-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
-          Explore Collections
+          {t("about.exploreCollections")}
         </Link>
       </section>
     </div>

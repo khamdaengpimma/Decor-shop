@@ -2,10 +2,12 @@
 
 import { useCart, selectItemQty } from "@/store/cart";
 import { Product } from "@/store/cart";
+import { useTranslations } from "@/lib/i18n";
 
 import Link from "next/link";
 
 export default function ProductCard({ product }: { product: Product }) {
+  const t = useTranslations();
   const add       = useCart((s) => s.add);
   const decrement = useCart((s) => s.decrement);
   const remove    = useCart((s) => s.remove);
@@ -31,7 +33,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {soldOut && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
             <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200">
-              Out of Stock
+              {t("products.outOfStock")}
             </span>
           </div>
         )}
@@ -51,7 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
               whitespace-nowrap hidden sm:block
             "
           >
-            + Quick Add
+            {t("products.quickAdd")}
           </button>
         )}
       </div>
@@ -90,14 +92,14 @@ export default function ProductCard({ product }: { product: Product }) {
           {soldOut ? (
             <button disabled
               className="w-full py-1.5 sm:py-2 bg-gray-100 text-gray-400 text-xs sm:text-sm font-semibold rounded-xl cursor-not-allowed">
-              Unavailable
+              {t("products.unavailable")}
             </button>
           ) : !inCart ? (
             <button
               onClick={() => add(product)}
               className="w-full py-1.5 sm:py-2 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-xl transition-all duration-150"
             >
-              Add to Cart
+              {t("products.addToCart")}
             </button>
           ) : (
             <div className="flex items-center justify-between bg-gray-100 rounded-xl px-1 py-0.5">

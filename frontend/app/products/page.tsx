@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useCart, selectCount } from "@/store/cart";
 import Navbar from "@/components/Navbar";
+import { useTranslations } from "@/lib/i18n";
 
 
 interface Product {
@@ -20,6 +21,7 @@ interface Product {
 const CATEGORIES = ["All", "Vases", "Lighting", "Cushions", "Rugs", "Plants", "Art"];
 
 export default function ProductsPage() {
+  const t = useTranslations();
   const [products,  setProducts]  = useState<Product[]>([]);
   const [loading,   setLoading]   = useState(true);
   const [search,    setSearch]    = useState("");
@@ -80,7 +82,7 @@ export default function ProductsPage() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search products..."
+              placeholder={t("products.searchPlaceholder")}
               className="w-full pl-9 pr-4 py-2.5 border border-black rounded-full bg-white text-black text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
             />
           </div>
@@ -94,7 +96,7 @@ export default function ProductsPage() {
                 ${category === cat
                   ? "bg-amber-500 text-white border-amber-500 shadow-sm"
                   : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
-              {cat}
+              {t(`products.categories.${cat}`)}
             </button>
           ))}
         </div>
@@ -126,10 +128,10 @@ export default function ProductsPage() {
         {!loading && filtered.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <p className="text-4xl mb-3">🪴</p>
-            <p className="text-sm">No products found.</p>
+            <p className="text-sm">{t("products.noProductsFound")}</p>
             <button onClick={() => { setSearch(""); setCategory("All"); }}
               className="mt-4 px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-full transition">
-              Clear filters
+              {t("products.clearFilters")}
             </button>
           </div>
         )}
@@ -157,7 +159,7 @@ export default function ProductsPage() {
                     {/* Out of stock badge */}
                     {p.stock === 0 && (
                       <span className="absolute top-2 left-2 bg-gray-800 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                        Out of stock
+                        {t("products.outOfStock")}
                       </span>
                     )}
                   </div>
@@ -173,7 +175,7 @@ export default function ProductsPage() {
                     <div className="flex items-center justify-between mt-auto pt-2">
                       <span className="text-sm font-bold text-gray-900">₫{p.price.toLocaleString()}</span>
                       {p.stock !== undefined && p.stock > 0 && (
-                        <span className="text-[10px] text-gray-400">{p.stock} left</span>
+                        <span className="text-[10px] text-gray-400">{t("products.itemsLeft", { count: p.stock })}</span>
                       )}
                     </div>
 
@@ -188,7 +190,7 @@ export default function ProductsPage() {
                             ? "bg-green-500 text-white"
                             : "bg-amber-500 hover:bg-amber-600 text-white shadow-sm"}`}
                     >
-                      {p.stock === 0 ? "Unavailable" : isAdded ? "✓ Added" : "Add to Cart"}
+                      {p.stock === 0 ? t("products.unavailable") : isAdded ? t("products.added") : t("products.addToCart")}
                     </button>
                   </div>
                 </div>
@@ -201,11 +203,11 @@ export default function ProductsPage() {
       {/* ── MOBILE BOTTOM NAV ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex md:hidden">
         {[
-          { label: "Home",    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
-          { label: "Cart",    icon: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0", href: "cart" },
+          { label: t("navbar.home"),    icon: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z",               href: "/" },
+          { label: t("navbar.cart"),    icon: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0", href: "/cart" },
           isLoggedIn
-            ? { label: "Logout",   icon: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1", href: "#", action: handleLogout }
-            : { label: "Register", icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z", href: "/register" },
+            ? { label: t("navbar.logout"),   icon: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1", href: "#", action: handleLogout }
+            : { label: t("navbar.register"), icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z", href: "/register" },
         ].map(({ label, icon, href, action }: any) => (
           <a key={label} href={href} onClick={action}
             className={`flex-1 flex flex-col items-center justify-center py-2 gap-1 transition-colors

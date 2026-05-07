@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useTranslations } from "@/lib/i18n";
 
 type OrderStatus =
   | "pending"
@@ -68,6 +69,7 @@ const statusClass: Record<OrderStatus, string> = {
 };
 
 export default function OrdersPage() {
+  const t = useTranslations();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] =
@@ -139,16 +141,15 @@ export default function OrdersPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-500">
-              Purchase History
+              {t("orders.purchaseHistory")}
             </p>
 
             <h1 className="mt-2 text-3xl sm:text-4xl font-black text-gray-900">
-              Your Orders
+              {t("orders.yourOrders")}
             </h1>
 
             <p className="mt-2 text-gray-500">
-              View all your purchases and order
-              tracking
+              {t("orders.viewOrders")}
             </p>
           </div>
 
@@ -156,7 +157,7 @@ export default function OrdersPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 min-w-[140px]">
               <p className="text-xs text-gray-400 uppercase font-bold">
-                Orders
+                {t("orders.ordersLabel")}
               </p>
 
               <h3 className="mt-2 text-3xl font-black text-gray-900">
@@ -166,7 +167,7 @@ export default function OrdersPage() {
 
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 min-w-[140px]">
               <p className="text-xs text-gray-400 uppercase font-bold">
-                Total Spent
+                {t("orders.totalSpent")}
               </p>
 
               <h3 className="mt-2 text-3xl font-black text-amber-500">
@@ -184,19 +185,18 @@ export default function OrdersPage() {
             </div>
 
             <h2 className="text-2xl font-black text-gray-900">
-              Login Required
+              {t("orders.loginRequired")}
             </h2>
 
             <p className="mt-2 text-gray-500">
-              Please sign in to view your order
-              history
+              {t("orders.pleaseSignIn")}
             </p>
 
             <Link
               href="/login"
               className="inline-flex mt-6 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold transition"
             >
-              Sign In
+              {t("orders.signIn")}
             </Link>
           </div>
         ) : loading ? (
@@ -219,19 +219,18 @@ export default function OrdersPage() {
             </div>
 
             <h2 className="mt-5 text-2xl font-black text-gray-900">
-              No Orders Yet
+              {t("orders.noOrdersYet")}
             </h2>
 
             <p className="mt-2 text-gray-500">
-              Your purchased products will appear
-              here
+              {t("orders.noOrdersMessage")}
             </p>
 
             <Link
               href="/products"
               className="inline-flex mt-6 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold transition"
             >
-              Start Shopping
+              {t("orders.startShopping")}
             </Link>
           </div>
         ) : (
@@ -271,7 +270,7 @@ export default function OrdersPage() {
                           ]
                         }`}
                       >
-                        {order.status}
+                        {t(`orders.status.${order.status}`)}
                       </span>
                     </div>
                   </div>
@@ -279,7 +278,7 @@ export default function OrdersPage() {
                   {/* CUSTOMER */}
                   <div className="p-5 border-b border-gray-100">
                     <h3 className="text-sm font-black text-gray-900 mb-4">
-                      Customer Info
+                      {t("orders.customerInfo")}
                     </h3>
 
                     <div className="space-y-2">
@@ -304,7 +303,7 @@ export default function OrdersPage() {
                   {/* ITEMS */}
                   <div className="p-5">
                     <h3 className="text-sm font-black text-gray-900 mb-4">
-                      Order Items
+                      {t("orders.orderItems")}
                     </h3>
 
                     <div className="space-y-3">
@@ -345,7 +344,7 @@ export default function OrdersPage() {
                     {/* TOTAL */}
                     <div className="mt-5 pt-5 border-t border-gray-100 flex items-center justify-between">
                       <span className="text-sm font-bold text-gray-500">
-                        Total Payment
+                        {t("orders.totalPayment")}
                       </span>
 
                       <span className="text-2xl font-black text-amber-500">

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import api from "@/lib/api";
 import Link from "next/link";
+import { useTranslations } from "@/lib/i18n";
 
 interface MobileNavItem {
   label: string;
@@ -12,13 +13,14 @@ interface MobileNavItem {
 }
 
 export default function Login() {
+  const t = useTranslations();
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
 
   const handleLogin = async () => {
-    if (!email || !password) { setError("Please fill in all fields."); return; }
+    if (!email || !password) { setError(t("login.fillFields")); return; }
     setLoading(true);
     setError("");
     try {
@@ -30,7 +32,7 @@ export default function Login() {
       }
       window.location.href = "/admin";
     } catch {
-      setError("Invalid email or password.");
+      setError(t("login.invalidCredentials"));
     } finally {
       setLoading(false);
     }
@@ -51,7 +53,7 @@ export default function Login() {
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
             Décor<span className="text-amber-500">Shop</span>
           </span>
-          <p className="text-xs text-gray-400 mt-0.5">Sign in to your dashboard</p>
+          <p className="text-xs text-gray-400 mt-0.5">{t("login.subtitle")}</p>
         </div>
 
         {/* Form body */}
@@ -69,14 +71,14 @@ export default function Login() {
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1">Email</label>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">{t("login.emailLabel")}</label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
               </svg>
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t("login.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -87,14 +89,14 @@ export default function Login() {
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1">Password</label>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">{t("login.passwordLabel")}</label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder={t("login.passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -117,14 +119,14 @@ export default function Login() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
             )}
-            {loading ? "Signing in…" : "Sign In"}
+            {loading ? t("login.signingIn") : t("login.signIn")}
           </button>
 
           {/* Register link */}
           <p className="text-center text-xs text-gray-400">
-            Don&apos;t have an account?{" "}
+            {t("login.noAccount")} {" "}
             <a href="/register" className="text-amber-500 font-semibold hover:text-amber-600 transition">
-              Register
+              {t("login.register")}
             </a>
           </p>
         </div>
