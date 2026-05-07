@@ -29,17 +29,7 @@ interface Order {
   address:   string;
 }
 
-/* ── Status config ── */
-const STATUS_CONFIG = (t: any): Record<OrderStatus, { label: string; color: string; dot: string }> => ({
-  pending:    { label: t("admin.orderStatuses.pending"),    color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-400" },
-  processing: { label: t("admin.orderStatuses.processing"), color: "bg-blue-100   text-blue-700",   dot: "bg-blue-400"   },
-  shipped:    { label: t("admin.orderStatuses.shipped"),    color: "bg-purple-100 text-purple-700", dot: "bg-purple-400" },
-  delivered:  { label: t("admin.orderStatuses.delivered"),  color: "bg-green-100  text-green-700",  dot: "bg-green-400"  },
-  cancelled:  { label: t("admin.orderStatuses.cancelled"),  color: "bg-red-100    text-red-500",    dot: "bg-red-400"    },
-});
-
-const ALL_STATUSES = Object.keys(STATUS_CONFIG(t)) as OrderStatus[];
-
+/* ── Next Status Mapping ── */
 const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   pending:    "processing",
   processing: "shipped",
@@ -65,6 +55,20 @@ export default function Orders() {
   const t = useTranslations();
   const router   = useRouter();
   const pathname = usePathname();
+
+  /* ── Status config ── */
+  const STATUS_CONFIG = useMemo(
+    () => ({
+      pending:    { label: t("admin.orderStatuses.pending"),    color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-400" },
+      processing: { label: t("admin.orderStatuses.processing"), color: "bg-blue-100   text-blue-700",   dot: "bg-blue-400"   },
+      shipped:    { label: t("admin.orderStatuses.shipped"),    color: "bg-purple-100 text-purple-700", dot: "bg-purple-400" },
+      delivered:  { label: t("admin.orderStatuses.delivered"),  color: "bg-green-100  text-green-700",  dot: "bg-green-400"  },
+      cancelled:  { label: t("admin.orderStatuses.cancelled"),  color: "bg-red-100    text-red-500",    dot: "bg-red-400"    },
+    }),
+    [t]
+  );
+
+  const ALL_STATUSES = useMemo(() => Object.keys(STATUS_CONFIG) as OrderStatus[], [STATUS_CONFIG]);
 
   const [orders,      setOrders]      = useState<Order[]>([]);
   const [loading,     setLoading]     = useState(true);
@@ -241,7 +245,7 @@ export default function Orders() {
           {/* ── Summary stat cards ── */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {(["pending","processing","shipped","delivered"] as OrderStatus[]).map((s) => {
-              const cfg = STATUS_CONFIG(t)[s];
+              const cfg = STATUS_CONFIG[s];
               return (
                 <button
                   key={s}
@@ -288,7 +292,7 @@ export default function Orders() {
                       : "bg-white border border-gray-200 text-gray-500 hover:bg-gray-50"}
                   `}
                 >
-                  {s === "all" ? "All" : STATUS_CONFIG(t)[s].label}
+                  {s === "all" ? "All" : STATUS_CONFIG[s].label}
                   <span className={`ml-1 ${filter === s ? "text-amber-100" : "text-gray-400"}`}>
                     {counts[s] ?? 0}
                   </span>
@@ -318,7 +322,7 @@ export default function Orders() {
           {!loading && visible.length > 0 && (
             <ul className="space-y-3">
               {visible.map((order) => {
-                const cfg        = STATUS_CONFIG(t)[order.status];
+                const cfg        = STATUS_CONFIG[order.status];
                 const isExpanded = expanded === order._id;
                 const isUpdating = updating === order._id;
                 const next       = NEXT_STATUS[order.status];
@@ -425,7 +429,7 @@ export default function Orders() {
                               className="text-xs border border-black rounded-lg px-2 py-1.5 bg-white text-black focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 transition"
                             >
                               {ALL_STATUSES.map((s) => (
-                                <option key={s} value={s}>{STATUS_CONFIG(t)[s].label}</option>
+                                <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
                               ))}
                             </select>
                           </div>
@@ -443,7 +447,7 @@ export default function Orders() {
                                 </svg>
                               ) : (
                                 <>
-                                  Mark as {STATUS_CONFIG(t)[next].label}
+                                  Mark as {STATUS_CONFIG[next].label}
                                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                   </svg>

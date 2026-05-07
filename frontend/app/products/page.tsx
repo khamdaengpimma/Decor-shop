@@ -18,11 +18,10 @@ interface Product {
   category?: string;
 }
 
-const CATEGORIES = ["All", "Vases", "Lighting", "Cushions", "Rugs", "Plants", "Art"];
-
 export default function ProductsPage() {
   const t = useTranslations();
   const [products,  setProducts]  = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>(["All"]);
   const [loading,   setLoading]   = useState(true);
   const [search,    setSearch]    = useState("");
   const [category,  setCategory]  = useState("All");
@@ -34,7 +33,14 @@ export default function ProductsPage() {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("token"));
     axios.get("http://localhost:5000/api/products")
-      .then((res) => setProducts(res.data))
+      .then((res) => {
+        setProducts(res.data);
+        // Extract unique categories from products
+        const uniqueCategories = Array.from(
+          new Set(res.data.map((p: Product) => p.category).filter(Boolean))
+        ).sort() as string[];
+        setCategories(["All", ...uniqueCategories]);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -48,6 +54,12 @@ export default function ProductsPage() {
     add(product as any);
     setAddedId(product._id);
     setTimeout(() => setAddedId(null), 1200);
+  };
+
+  const getCategoryLabel = (cat: string) => {
+    const translated = t(`products.categories.${cat}`);
+    // If translation key is returned as-is, use the category name as fallback
+    return translated.startsWith("products.categories.") ? cat : translated;
   };
 
   const filtered = useMemo(() =>
@@ -90,13 +102,13 @@ export default function ProductsPage() {
 
         {/* Category pills */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-5 scrollbar-hide">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button key={cat} onClick={() => setCategory(cat)}
               className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold border transition
                 ${category === cat
                   ? "bg-amber-500 text-white border-amber-500 shadow-sm"
                   : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
-              {t(`products.categories.${cat}`)}
+              {getCategoryLabel(cat)}
             </button>
           ))}
         </div>
